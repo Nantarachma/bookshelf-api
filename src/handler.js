@@ -108,7 +108,7 @@ const getBookByIdHandler = (request, h) => {
 	if (book) {
 		// Clone book object dan set id ke null
 		const bookResponse = {
-			id: undefined, // Set id ke null alih-alih undefined
+			id: book.id, // Set id ke null alih-alih undefined
 			name: book.name,
 			year: book.year,
 			author: book.author,
