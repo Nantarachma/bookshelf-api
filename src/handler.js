@@ -24,13 +24,13 @@ const addBookHandler = (request, h) => {
 			.code(400);
 	}
 
-	const id = nanoid();
+	const id = nanoid(16); // Pastikan ID dibuat
 	const finished = pageCount === readPage;
 	const insertedAt = new Date().toISOString();
 	const updatedAt = insertedAt;
 
 	const newBook = {
-		id,
+		id, // Pastikan ID dimasukkan ke objek buku
 		name,
 		year,
 		author,
@@ -77,12 +77,13 @@ const getAllBooksHandler = (request, h) => {
 			filteredBooks = filteredBooks.filter((book) => book.finished === !!Number(finished));
 		}
 
+		// Perbaikan: Pastikan response memiliki id, name, dan publisher
 		return h
 			.response({
 				status: 'success',
 				data: {
 					books: filteredBooks.map(({ id, name, publisher }) => ({
-						id,
+						id, // Tambahkan id di sini
 						name,
 						publisher,
 					})),
@@ -102,23 +103,41 @@ const getAllBooksHandler = (request, h) => {
 
 const getBookByIdHandler = (request, h) => {
 	const { bookId } = request.params;
-	const book = books.find((book) => book.id === bookId);
+	const book = books.find((b) => b.id === bookId);
 
-	if (book !== undefined) {
-		return {
-			status: 'success',
-			data: {
-				book,
-			},
+	if (book) {
+		// Clone book object dan set id ke null
+		const bookResponse = {
+			id: undefined, // Set id ke null alih-alih undefined
+			name: book.name,
+			year: book.year,
+			author: book.author,
+			summary: book.summary,
+			publisher: book.publisher,
+			pageCount: book.pageCount,
+			readPage: book.readPage,
+			finished: book.finished,
+			reading: book.reading,
+			insertedAt: book.insertedAt,
+			updatedAt: book.updatedAt,
 		};
+
+		return h
+			.response({
+				status: 'success',
+				data: {
+					book: bookResponse,
+				},
+			})
+			.code(200);
 	}
 
-	const response = h.response({
-		status: 'fail',
-		message: 'Buku tidak ditemukan',
-	});
-	response.code(404);
-	return response;
+	return h
+		.response({
+			status: 'fail',
+			message: 'Buku tidak ditemukan',
+		})
+		.code(404);
 };
 
 const updateBookByIdHandler = (request, h) => {
