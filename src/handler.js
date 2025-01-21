@@ -106,27 +106,24 @@ const getBookByIdHandler = (request, h) => {
 	const book = books.find((b) => b.id === bookId);
 
 	if (book) {
-		// Clone book object dan set id ke null
-		const bookResponse = {
-			id: book.id, // Set id ke null alih-alih undefined
-			name: book.name,
-			year: book.year,
-			author: book.author,
-			summary: book.summary,
-			publisher: book.publisher,
-			pageCount: book.pageCount,
-			readPage: book.readPage,
-			finished: book.finished,
-			reading: book.reading,
-			insertedAt: book.insertedAt,
-			updatedAt: book.updatedAt,
-		};
-
 		return h
 			.response({
 				status: 'success',
 				data: {
-					book: bookResponse,
+					book: {
+						id: book.id, // Gunakan ID asli
+						name: book.name,
+						year: book.year,
+						author: book.author,
+						summary: book.summary,
+						publisher: book.publisher,
+						pageCount: book.pageCount,
+						readPage: book.readPage,
+						finished: book.finished,
+						reading: book.reading,
+						insertedAt: book.insertedAt,
+						updatedAt: book.updatedAt,
+					},
 				},
 			})
 			.code(200);
